@@ -7,27 +7,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <style>
   * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    font-family: Georgia, 'Times New Roman', serif;
-    color: #21254e; background: #ffffff; -webkit-font-smoothing: antialiased;
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: #21254e; -webkit-font-smoothing: antialiased; }
+
+  /* Bloque total de altura fija: se ve igual en cualquier dispositivo */
+  .wrap {
+    height: 600px; max-width: 1180px; margin: 0 auto;
+    padding: 14px 18px 12px;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-  .wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 28px 20px 40px; }
   h1 {
-    font-family: Georgia, 'Times New Roman', serif; font-weight: 700; color: #21254e;
-    font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px;
+    flex: none; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; color: #21254e;
+    font-size: clamp(22px, 3.5vw, 36px); line-height: 1.12; margin: 0 0 4px;
   }
-  .subtitle { font-family: Georgia, 'Times New Roman', serif; color: #21254e;
-    font-size: clamp(15px, 2vw, 18px); line-height: 1.4; margin: 0 0 6px; opacity: 0.85; }
-  .hint { font-family: Georgia, 'Times New Roman', serif; font-size: 13.5px; color: #5a5c72; margin: 0 0 12px; }
+  .subtitle { flex: none; color: #21254e; font-size: clamp(13px, 1.8vw, 16px); line-height: 1.35; margin: 0 0 4px; opacity: 0.85; }
+  .hint { flex: none; font-size: 13px; color: #5a5c72; margin: 0 0 6px; }
+  .legend { flex: none; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 0 0 6px; font-size: 13.5px; color: #21254e; }
+  .legend .lg { display: flex; align-items: center; gap: 7px; }
+  .legend .sw { width: 13px; height: 13px; border-radius: 50%; display: inline-block; opacity: 0.85; }
 
-  .legend { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin: 0 0 12px;
-    font-family: Georgia, 'Times New Roman', serif; font-size: 14px; color: #21254e; }
-  .legend .lg { display: flex; align-items: center; gap: 8px; }
-  .legend .sw { width: 14px; height: 14px; border-radius: 50%; display: inline-block; opacity: 0.85; }
-
-  #chart { position: relative; width: 100%; }
-  #chart svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+  #chart { flex: 1 1 auto; min-height: 0; position: relative; width: 100%; }
+  #chart svg { display: block; width: 100%; height: 100%; touch-action: pan-y; }
 
   .gridline { stroke: #e2e3ec; stroke-width: 1; }
   .ytick-label { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; fill: #8a8ca0; }
@@ -42,21 +42,21 @@
     position: absolute; pointer-events: none; background: #ffffff;
     border: 1px solid #d9dae3; border-left: 4px solid #1ba1b2;
     box-shadow: 0 6px 22px rgba(33,37,78,0.16);
-    padding: 11px 14px; border-radius: 4px;
+    padding: 10px 13px; border-radius: 4px;
     font-family: Georgia, 'Times New Roman', serif; color: #21254e;
-    max-width: 290px; opacity: 0; transform: translateY(4px);
+    max-width: 280px; opacity: 0; transform: translateY(4px);
     transition: opacity 0.12s ease, transform 0.12s ease; z-index: 10;
   }
   .tooltip.show { opacity: 1; transform: translateY(0); }
-  .tt-name { font-weight: 700; font-size: 15px; line-height: 1.25; margin-bottom: 4px; }
-  .tt-role { font-size: 13.5px; line-height: 1.3; margin-bottom: 6px; }
-  .tt-meta { font-size: 13px; line-height: 1.35; color: #5a5c72; }
+  .tt-name { font-weight: 700; font-size: 14.5px; line-height: 1.25; margin-bottom: 3px; }
+  .tt-role { font-size: 13px; line-height: 1.3; margin-bottom: 5px; }
+  .tt-meta { font-size: 12.5px; line-height: 1.35; color: #5a5c72; }
 
-  .bottombar { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 14px 24px; margin-top: 16px; }
-  .footer { font-family: Georgia, 'Times New Roman', serif; font-size: 13px; line-height: 1.5; color: #21254e; margin: 0; }
-  .credit { display: flex; align-items: center; gap: 9px; margin-left: auto; }
-  .credit-logo { height: 44px; width: auto; display: block; }
-  .credit-text { font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px; color: #21254e; line-height: 1.25; text-align: right; }
+  .bottombar { flex: none; display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px 20px; margin-top: 8px; }
+  .footer { font-family: Georgia, 'Times New Roman', serif; font-size: 12.5px; line-height: 1.45; color: #21254e; margin: 0; }
+  .credit { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .credit-logo { height: 40px; width: auto; display: block; }
+  .credit-text { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #21254e; line-height: 1.2; text-align: right; }
   .credit-text b { font-weight: 700; }
 </style>
 </head>
@@ -89,14 +89,12 @@ const DATA = [{"nombre": "Magali Sánchez Guerrero", "dignidad": "Alcalde/sa", "
 const COL_M = "#e9590e";   // Mujer
 const COL_H = "#1ba1b2";   // Hombre
 const FILL_OP = 0.85;
-const SVG_H = 500;
-const MARGIN = { top: 16, right: 22, bottom: 26 };
-const PAD = 1.5;
+const MARGIN_RIGHT = 22, MT = 8, MB = 8, PAD = 1.5, BAND_F = 0.30;
 
 const ages = DATA.map(d => d.edad);
 const minA = d3.min(ages), maxA = d3.max(ages);
 
-// orden intercalado: reparte a las mujeres equitativamente a lo ancho
+// orden intercalado: reparte a las mujeres equitativamente dentro de la masa
 const totalM = DATA.filter(d => d.genero === "Hombre").length;
 const totalW = DATA.length - totalM;
 const posByIdx = (function () {
@@ -113,13 +111,12 @@ const posByIdx = (function () {
   return p;
 })();
 
-function bubbleR(plotW) { return 0.8 * Math.max(6, Math.min(17.5, 7.4 + 0.0121 * (plotW - 200))); }
 const colorOf = d => d.genero === "Mujer" ? COL_M : COL_H;
 const grupoLabel = { "Millennials": "Millennial", "Boomers": "Boomer" };
 
 const container = document.getElementById("chart");
 const tooltip = document.getElementById("tooltip");
-let activeId = null, pinned = false, lastWidth = -1;
+let activeId = null, pinned = false, lastWidth = -1, currentChartH = 400;
 
 function dignidadLabel(d) {
   const dig = d.dignidad; // "Alcalde/sa" | "Prefecto/a"
@@ -147,7 +144,7 @@ function showTooltip(d, node) {
   if (left + ttW > w) left = d.x - d.r - 12 - ttW;
   if (left < 0) left = 8;
   if (top < 4) top = 4;
-  if (top + ttH > SVG_H - 4) top = SVG_H - 4 - ttH;
+  if (top + ttH > currentChartH - 4) top = currentChartH - 4 - ttH;
   tooltip.style.left = left + "px"; tooltip.style.top = top + "px";
   d3.selectAll(".bubble").classed("active", false);
   d3.select(node).classed("active", true);
@@ -160,40 +157,44 @@ function render() {
   d3.select(container).select("svg").remove();
   hideTooltip();
 
-  const marginLeft = width < 480 ? 42 : 54;
-  const plotW = width - marginLeft - MARGIN.right;
-  const R = bubbleR(plotW), INSET = R + 4;
-  const S = SVG_H - MARGIN.top - MARGIN.bottom;
+  const chartH = Math.max(120, container.clientHeight); // alto que queda para el gráfico
+  currentChartH = chartH;
+  const marginLeft = width < 480 ? 40 : 52;
+  const plotW = Math.max(40, width - marginLeft - MARGIN_RIGHT);
+  const S = chartH - MT - MB;
   const N = DATA.length;
-
-  const yScale = d3.scaleLinear()       // edad: mayor arriba
-    .domain([minA, maxA])
-    .range([MARGIN.top + S - INSET, MARGIN.top + INSET]);
   const center = marginLeft + plotW / 2;
-  const BAND = 0.30 * plotW;             // franja central: agrupa los puntos en una masa
-  const targetX = pos => center - BAND / 2 + (pos / (N - 1)) * BAND;
+  const BAND = BAND_F * plotW;
 
-  const nodes = DATA.map((d, i) => {
-    const tx = targetX(posByIdx[i]);
-    return Object.assign({}, d, {
-      __id: i, r: R, ty: yScale(d.edad), tx: tx, x: tx, y: yScale(d.edad)
+  // tamaño del punto según el área disponible (ancho y alto)
+  let R = Math.max(4, Math.min(13, 0.0135 * Math.sqrt(plotW * chartH)));
+  let nodes, yScale;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const INSET = R + 4;
+    yScale = d3.scaleLinear().domain([minA, maxA]).range([MT + S - INSET, MT + INSET]);
+    const half = BAND / 2;
+    const targetX = pos => center - half + (pos / (N - 1)) * BAND;
+    nodes = DATA.map((d, i) => {
+      const tx = targetX(posByIdx[i]);
+      return Object.assign({}, d, { __id: i, r: R, ty: yScale(d.edad), tx: tx, x: tx, y: yScale(d.edad) });
     });
-  });
-
-  const sim = d3.forceSimulation(nodes)
-    .force("x", d3.forceX(d => d.tx).strength(0.09))
-    .force("y", d3.forceY(d => d.ty).strength(0.85))
-    .force("collide", d3.forceCollide(R + PAD).strength(0.93).iterations(3))
-    .stop();
-  for (let i = 0; i < 750; i++) {
-    sim.tick();
-    for (const n of nodes) n.x = Math.max(marginLeft + R, Math.min(width - MARGIN.right - R, n.x));
+    const sim = d3.forceSimulation(nodes)
+      .force("x", d3.forceX(d => d.tx).strength(0.09))
+      .force("y", d3.forceY(d => d.ty).strength(0.85))
+      .force("collide", d3.forceCollide(R + PAD).strength(0.93).iterations(2))
+      .stop();
+    for (let i = 0; i < 600; i++) {
+      sim.tick();
+      for (const n of nodes) n.x = Math.max(marginLeft + R, Math.min(width - MARGIN_RIGHT - R, n.x));
+    }
+    let maxYR = 0;
+    for (const n of nodes) if (n.y + n.r > maxYR) maxYR = n.y + n.r;
+    if (maxYR <= chartH - 1 || R <= 4) break;   // red de seguridad: si se sale, achica y reintenta
+    R = Math.max(4, R * 0.9);
   }
 
-  container.style.height = SVG_H + "px";
   const svg = d3.select(container).append("svg")
-    .attr("viewBox", "0 0 " + width + " " + SVG_H)
-    .attr("width", width).attr("height", SVG_H)
+    .attr("viewBox", "0 0 " + width + " " + chartH)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("role", "img")
     .attr("aria-label", "Gráfico de burbujas: edad y género de alcaldes y prefectos");
@@ -203,7 +204,7 @@ function render() {
   const grid = svg.append("g");
   grid.selectAll("line").data(ticks).join("line")
     .attr("class", "gridline")
-    .attr("x1", marginLeft - 8).attr("x2", width - MARGIN.right)
+    .attr("x1", marginLeft - 8).attr("x2", width - MARGIN_RIGHT)
     .attr("y1", d => yScale(d)).attr("y2", d => yScale(d));
   grid.selectAll("text").data(ticks).join("text")
     .attr("class", "ytick-label")
@@ -242,7 +243,8 @@ container.addEventListener("click", function (e) {
   if (e.target.tagName !== "circle") hideTooltip();
 });
 
-render();
+// primer render tras aplicar el layout (para medir bien el alto disponible)
+requestAnimationFrame(render);
 
 let rt;
 window.addEventListener("resize", function () {
